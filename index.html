@@ -1,27 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>DataVis - Assignment 2</title>
-    
+
     <!-- Loading d3js version 5-->
     <script src="d3.v5.min.js"></script>
-    
+
     <!-- Loading style.css; use if needed -->
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" />
+  </head>
 
-</head>
+  <body>
+    <!-- YOUR SOLUTION GOES HERE-->
 
-<body>
+    <p class="hello">Hello</p>
 
-<!-- YOUR SOLUTION GOES HERE-->
-  
-  
-  Hello
+    <svg>
+      <circle
+        class="target"
+        style="fill: #69b3a2"
+        stroke="black"
+        cx="50"
+        cy="50"
+        r="40"
+      ></circle>
+    </svg>
+
+    <svg id="dataviz_area" height=200 width=450></svg>
 
 
-<!-- loading the main javascript file; implement logic there -->
-<script src="main.js"></script>
+    <div>
 
-</body>
+
+      <svg id="viz_area_2" height=200 width=450></svg>
+
+      
+    </div>
+
+
+    <div id="Area"></div>
+
+
+    <div id="my_dataviz"></div>
+
+
+    <div id="my_dataviz2"></div>
+
+
+
+    <!-- loading the main javascript file; implement logic there -->
+    <script src="main.js"></script>
+  </body>
 </html>
