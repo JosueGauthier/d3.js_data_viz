@@ -3,3 +3,10 @@ body {
 }
 
 /* YOUR CSS CODE GOES HERE */
+
+
+.line {
+    fill: none;
+    stroke: steelblue;
+    stroke-width: 2px;
+  }
