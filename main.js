@@ -9,10 +9,6 @@ window.onload = () => {
   // Load the data set from the assets folder:
 
 
-
-
-
-
   // set the dimensions and margins of the graph
   var margin = { top: 20, right: 20, bottom: 30, left: 50 },
     width = 600 - margin.left - margin.right,
@@ -43,14 +39,29 @@ window.onload = () => {
         d.close = +d.close;
       }); */
 
+
+    data.forEach(function (d) {
+      d.price = parseInt(d.Retail_Price);
+      d.cost = parseInt(d.Dealer_Cost);
+
+    });
+
+
+    console.log(d3.max(data, function (d) { return d.cost; }))
+
     // Scale the range of the data
-    x.domain([0, d3.max(data, function (d) { return d.Sepal_Length; })]);
-    y.domain([0, d3.max(data, function (d) { return d.Petal_Length; })]);
+    x.domain([0, d3.max(data, function (d) { return d.price; })]);
+    y.domain([0, d3.max(data, function (d) { return d.cost; })]);
 
 
-    var color = d3.scaleOrdinal()
+    /* var color = d3.scaleOrdinal()
       .domain(["setosa", "versicolor", "virginica"])
-      .range(["#BF8955", "#D18975", "#8FD175"])
+      .range(["#BF8955", "#D18975", "#8FD175"]) */
+
+
+    var myColor = d3.scaleOrdinal().domain(data)
+      .range(d3.schemeSet3);
+    
 
 
 
@@ -59,9 +70,10 @@ window.onload = () => {
       .data(data)
       .enter().append("circle")
       .attr("r", 5)
-      .attr("cx", function (d) { return x(d.Sepal_Length); })
-      .attr("cy", function (d) { return y(d.Petal_Length); })
-      .style("fill", function (d) { return color(d.Species) });
+      .attr("fill", function (d) { return myColor(d.Type) })
+      .attr("cx", function (d) { return x(d.price); })
+      .attr("cy", function (d) { return y(d.cost); });
+    /* .style("fill", function (d) { return color(d.Species) }) */
 
     // Add the X Axis
     svg.append("g")
