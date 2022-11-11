@@ -8,11 +8,18 @@ window.onload = () => {
 
   // Load the data set from the assets folder:
 
+  var screenWidth = window.screen.width;
+
+  var screenHeight = window.screen.height;
+
+
+
+
 
   // set the dimensions and margins of the graph
-  var margin = { top: 20, right: 20, bottom: 30, left: 50 },
-    width = 600 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+  var margin = { top: 20, right: 20, bottom: 70, left: 70 },
+    width = screenWidth - margin.left - margin.right,
+    height = screenHeight - margin.top - margin.bottom;
 
 
   // set the ranges
@@ -43,15 +50,26 @@ window.onload = () => {
     data.forEach(function (d) {
       d.price = parseInt(d.Retail_Price);
       d.cost = parseInt(d.Dealer_Cost);
+      d.engine = parseInt(d.Engine_Size);
+
+      d.cylindree = parseInt(d.Cyl);
+
+      console.log(d.cylindree);
+
+
+
 
     });
 
+    /* var xData = d.price;
+    var yData = d.engine; */
 
-    console.log(d3.max(data, function (d) { return d.cost; }))
 
+    /*     console.log(d3.max(data, function (d) { return d.cost; }))
+     */
     // Scale the range of the data
     x.domain([0, d3.max(data, function (d) { return d.price; })]);
-    y.domain([0, d3.max(data, function (d) { return d.cost; })]);
+    y.domain([0, d3.max(data, function (d) { return d.engine; })]);
 
 
     /* var color = d3.scaleOrdinal()
@@ -59,9 +77,14 @@ window.onload = () => {
       .range(["#BF8955", "#D18975", "#8FD175"]) */
 
 
-    var myColor = d3.scaleOrdinal().domain(data)
-      .range(d3.schemeSet3);
-    
+    var colorScale = d3.scaleOrdinal().domain(data)
+      .range(d3.schemeSet2);
+
+
+    var div = d3.select("body").append("div")
+      .attr("class", "tooltip")
+      .style("opacity", 0);
+
 
 
 
@@ -69,11 +92,34 @@ window.onload = () => {
     svg.selectAll("dot")
       .data(data)
       .enter().append("circle")
-      .attr("r", 5)
-      .attr("fill", function (d) { return myColor(d.Type) })
+      .attr("r", function (d) { return d.cylindree })
+      .attr("fill", function (d) { return colorScale(d.RWD) })
+      .attr("opacity", 0.5)
       .attr("cx", function (d) { return x(d.price); })
-      .attr("cy", function (d) { return y(d.cost); });
+      .attr("cy", function (d) { return y(d.engine); })
+      .on("mouseover", function (d) {
+        div.transition()
+          .duration(200)
+          .style("opacity", .9);
+        div.html(d.cylindree)
+          .style("left", (d3.event.pageX) + "px")
+          .style("top", (d3.event.pageY -200) + "px");
+      })
+      .on("mouseout", function (d) {
+        div.transition()
+          .duration(500)
+          .style("opacity", 0);
+      });
     /* .style("fill", function (d) { return color(d.Species) }) */
+
+
+
+
+
+
+
+
+
 
     // Add the X Axis
     svg.append("g")
@@ -83,6 +129,21 @@ window.onload = () => {
     // Add the Y Axis
     svg.append("g")
       .call(d3.axisLeft(y));
+
+    svg.append("text")
+      .attr("text-anchor", "end")
+      .attr("x", width / 2 + margin.left)
+      .attr("y", height + margin.top + 20)
+      /* .attr("fill","red") */
+      .text("Prix retail");
+
+    svg.append("text")
+      .attr("text-anchor", "end")
+      .attr("transform", "rotate(-90)")
+      .attr("y", -margin.left + 20)
+      .attr("x", -margin.top - height / 2 + 20)
+      .text("cout")
+
 
   });
 
