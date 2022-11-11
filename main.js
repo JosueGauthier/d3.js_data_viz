@@ -48,9 +48,13 @@ window.onload = () => {
 
 
     data.forEach(function (d) {
-      d.price = parseInt(d.Retail_Price);
-      d.cost = parseInt(d.Dealer_Cost);
+      d.weight = parseInt(d.Weight);
+      d.cityMilesPerGallon = parseInt(d.CityMilesPerGallon);
       d.engine = parseInt(d.Engine_Size);
+      d.horsepower = parseInt(d.Horsepower);
+
+      d.price = parseInt(d.Retail_Price);
+
 
       d.cylindree = parseInt(d.Cyl);
 
@@ -68,8 +72,11 @@ window.onload = () => {
     /*     console.log(d3.max(data, function (d) { return d.cost; }))
      */
     // Scale the range of the data
-    x.domain([0, d3.max(data, function (d) { return d.price; })]);
-    y.domain([0, d3.max(data, function (d) { return d.engine; })]);
+    x.domain([0, d3.max(data, function (d) { return d.weight; })]);
+    y.domain([0, d3.max(data, function (d) { return d.cityMilesPerGallon; })]);
+    y.domain([0, 65]);
+
+
 
 
     /* var color = d3.scaleOrdinal()
@@ -78,7 +85,7 @@ window.onload = () => {
 
 
     var colorScale = d3.scaleOrdinal().domain(data)
-      .range(d3.schemeSet2);
+      .range(d3.schemeSet1);
 
 
     var div = d3.select("body").append("div")
@@ -92,16 +99,16 @@ window.onload = () => {
     svg.selectAll("dot")
       .data(data)
       .enter().append("circle")
-      .attr("r", function (d) { return d.cylindree })
-      .attr("fill", function (d) { return colorScale(d.RWD) })
+      .attr("r", function (d) { return d.Cyl})
+      .attr("fill", function (d) { return colorScale(d.Type) })
       .attr("opacity", 0.5)
-      .attr("cx", function (d) { return x(d.price); })
-      .attr("cy", function (d) { return y(d.engine); })
+      .attr("cx", function (d) { return x(d.weight); })
+      .attr("cy", function (d) { return y(d.cityMilesPerGallon); })
       .on("mouseover", function (d) {
         div.transition()
           .duration(200)
           .style("opacity", .9);
-        div.html(d.cylindree)
+        div.html(d.cylindree +"<br>" + d.Type+ "<br>"+ d.price)
           .style("left", (d3.event.pageX) + "px")
           .style("top", (d3.event.pageY -200) + "px");
       })
@@ -135,14 +142,14 @@ window.onload = () => {
       .attr("x", width / 2 + margin.left)
       .attr("y", height + margin.top + 20)
       /* .attr("fill","red") */
-      .text("Prix retail");
+      .text("Weight");
 
     svg.append("text")
       .attr("text-anchor", "end")
       .attr("transform", "rotate(-90)")
       .attr("y", -margin.left + 20)
       .attr("x", -margin.top - height / 2 + 20)
-      .text("cout")
+      .text("City Miles Per Gallon")
 
 
   });
