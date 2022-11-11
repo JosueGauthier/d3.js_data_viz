@@ -4,7 +4,7 @@ var d3; // Minor workaround to avoid error messages in editors
 window.onload = () => {
 
   // YOUR CODE GOES HERE
-  console.log("YOUR CODE GOES HERE");
+  /* console.log("YOUR CODE GOES HERE"); */
 
   // Load the data set from the assets folder:
 
@@ -58,7 +58,7 @@ window.onload = () => {
 
       d.cylindree = parseInt(d.Cyl);
 
-      console.log(d.cylindree);
+      /* console.log(d.cylindree); */
 
 
 
@@ -99,7 +99,7 @@ window.onload = () => {
     svg.selectAll("dot")
       .data(data)
       .enter().append("circle")
-      .attr("r", function (d) { return d.Cyl})
+      .attr("r", function (d) { return d.Cyl })
       .attr("fill", function (d) { return colorScale(d.Type) })
       .attr("opacity", 0.5)
       .attr("cx", function (d) { return x(d.weight); })
@@ -108,9 +108,9 @@ window.onload = () => {
         div.transition()
           .duration(200)
           .style("opacity", .9);
-        div.html(d.cylindree +"<br>" + d.Type+ "<br>"+ d.price)
+        div.html(d.cylindree + "<br>" + d.Type + "<br>" + d.price)
           .style("left", (d3.event.pageX) + "px")
-          .style("top", (d3.event.pageY -200) + "px");
+          .style("top", (d3.event.pageY - 200) + "px");
       })
       .on("mouseout", function (d) {
         div.transition()
@@ -142,17 +142,22 @@ window.onload = () => {
       .attr("x", width / 2 + margin.left)
       .attr("y", height + margin.top + 20)
       /* .attr("fill","red") */
-      .text("Weight");
+      .text("Weight (kg)");
 
     svg.append("text")
       .attr("text-anchor", "end")
       .attr("transform", "rotate(-90)")
       .attr("y", -margin.left + 20)
       .attr("x", -margin.top - height / 2 + 20)
-      .text("City Miles Per Gallon")
+      .text("City Miles Per Gallon (Miles)")
 
 
   });
+
+
+
+
+
 
 
 
