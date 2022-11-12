@@ -11,12 +11,11 @@ function RadarChart(id, options) {
   d3.csv("cars.csv").then(function (data) {
 
 
-    console.log(data[0]["Retail_Price"]);
+    //console.log(data[0]["Retail_Price"]);
 
 
     var data = [
       [
-        //iPhone
         { axis: "Length", value: data[0]["Len"] },
         { axis: "Width", value: data[0]["Width"] },
         { axis: "Wheel base", value: data[0]["WheelBase"] },
@@ -31,7 +30,7 @@ function RadarChart(id, options) {
       w: 600,				//Width of the circle
       h: 600,				//Height of the circle
       margin: { top: 20, right: 20, bottom: 20, left: 20 }, //The margins of the SVG
-      levels: 2,				//How many levels or inner circles should there be drawn
+      levels: 3,				//How many levels or inner circles should there be drawn
       maxValue: 0, 			//What is the value that the biggest circle will represent
       labelFactor: 1.25, 	//How much farther than the radius of the outer circle should the labels be placed
       wrapWidth: 60, 		//The number of pixels after which a label needs to be given a new line
@@ -44,7 +43,8 @@ function RadarChart(id, options) {
     };
 
 
-    var myColor = d3.scaleOrdinal().domain(data)
+    var myColor = d3.scaleOrdinal()
+      .domain(data)
       .range(d3.schemeSet2);
 
     //Put all of the options into a variable called cfg
@@ -116,30 +116,39 @@ function RadarChart(id, options) {
       .style("filter", "url(#glow)");
 
     //Text indicating at what % each level is
-    axisGrid.selectAll(".axisLabel")
-      .data(d3.range(1, (config.levels + 1)).reverse())
-      .enter().append("text")
-      .attr("class", "axisLabel")
-      .attr("x", 4)
-      .attr("y", function (d) { return -d * radius / config.levels; })
-      .attr("dy", "0.4em")
-      .style("font-size", "10px")
-      .attr("fill", "#737373")
-      /* [0, d3.max(data, function (d) { return d.weight; })] */
-      .text(function (d) { return Format(maxValue * d / config.levels); });
 
 
-      axisGrid.scale([0,100])
-
-
-
-
-
+    /*     axisGrid.selectAll(".axisLabel")
+          .data(d3.range(1, (config.levels + 1)).reverse())
+          .enter().append("text")
+          .attr("class", "axisLabel")
+          .attr("x", 4) // decale echelle  en abscisse
+          .attr("y", function (d) { return -d * radius / config.levels; }) // gere espacement entre données en y 
+          .attr("dy", "0.4em") // decale echelle en ordonnée
+          .style("font-size", "10px")
+          .attr("fill", "#737373")
+          .text(function (d) { return Format(maxValue * d / config.levels); });
+     */
 
 
     /////////////////////////////////////////////////////////
     //////////////////// Draw the axes //////////////////////
     /////////////////////////////////////////////////////////
+
+
+    var scale = d3.scaleLinear()
+      .domain([10, 15])
+      .range([0, 200]);
+
+    var x_axis = d3.axisBottom()
+
+
+
+
+      .scale(scale);
+
+
+
 
     //Create the straight lines radiating outward from the center
     var axis = axisGrid.selectAll(".axis")
@@ -147,6 +156,7 @@ function RadarChart(id, options) {
       .enter()
       .append("g")
       .attr("class", "axis");
+
     //Append the lines
     axis.append("line")
       .attr("x1", 0)
@@ -154,33 +164,93 @@ function RadarChart(id, options) {
       .attr("x2", function (d, i) { return rScale(maxValue * 1.1) * Math.cos(angleSlice * i - Math.PI / 2); })
       .attr("y2", function (d, i) { return rScale(maxValue * 1.1) * Math.sin(angleSlice * i - Math.PI / 2); })
       .attr("class", "line")
-      .style("stroke", "white")
+      .style("stroke", "red")
       .style("stroke-width", "2px");
-
-
-    // Create the scale
-   /*  var x = d3.scaleLinear()
-      .domain([0, 100])         // This is what is written on the Axis: from 0 to 100
-      .range([100, 800]);       // This is where the axis is placed: from 100px to 800px
-
-    // Draw the axis
-    axis
-      .append("g")
-      
-      .call(d3.axisGrid(x)); */
-
-
-
     //Append the labels at each axis
     axis.append("text")
       .attr("class", "legend")
       .style("font-size", "11px")
       .attr("text-anchor", "middle")
-      .attr("dy", "0.35em")
-      .attr("x", function (d, i) { return rScale(maxValue * config.labelFactor) * Math.cos(angleSlice * i - Math.PI / 2); })
-      .attr("y", function (d, i) { return rScale(maxValue * config.labelFactor) * Math.sin(angleSlice * i - Math.PI / 2); })
-      .text(function (d) { return d })
-      .call(wrap, config.wrapWidth);
+      //.attr("dy", "0px")
+
+      .attr("transform", function (d, i) {
+        //console.log(d);
+        //console.log(i)
+        var angleI = angleSlice * i * 180 / Math.PI - 90;   // the angle to rotate the label
+        var distance = radius + 70; // the distance from the center
+        var flip = angleI > 90 ? 180 : 0;                    // 180 if label needs to be flipped
+        return "rotate(" + (angleI) + ") translate(" + distance + ")" + "rotate(" + flip + ")"
+      })
+
+      //.attr("x", function (d, i) { return rScale(maxValue * config.labelFactor) * Math.cos(angleSlice * i - Math.PI / 2); })
+      //.attr("y", function (d, i) { return rScale(maxValue * config.labelFactor) * Math.sin(angleSlice * i - Math.PI / 2); })
+      .text(function (d) { return d });
+
+
+
+    var scaleList = [
+
+      {label: "Length", value: [0, 20, 30 , 40, 50 , 60]},
+
+      
+    ];
+
+
+
+    axis.append("text")
+      .attr("class", "textscale")
+      .style("font-size", "10px")
+      .attr("fill", "#737373")
+      //.attr("text-anchor", "middle")
+
+      .data(scaleList[0]["Len"])
+      //.enter().append("text")
+      .attr("x", 4) // decale echelle  en abscisse
+      .attr("y", function (d) { return -d * radius / config.levels; }) // gere espacement entre données en y 
+      //.attr("dy", "0.4em") // decale echelle en ordonnée
+
+      .text(function (d) {
+
+        console.log(Format(maxValue * d / config.levels))
+
+        return Format(maxValue * d / config.levels);
+      });
+
+
+    axis.append("text")
+      .attr("class", "textscale")
+      .style("font-size", "10px")
+      .attr("fill", "#737373")
+
+
+      .attr("transform", function (d, i) {
+        console.log(d);
+        console.log(i)
+        var angleI = angleSlice * i * 180 / Math.PI - 90;   // the angle to rotate the label
+        var distance = radius + 70; // the distance from the center
+        var flip = angleI > 90 ? 180 : 0;                    // 180 if label needs to be flipped
+        return "rotate(" + (angleI) + ") translate(" + distance + ")" + "rotate(" + flip + ")"
+      })
+      .call(a);
+
+
+
+
+
+    /* 
+    
+        axis.append("g")
+          .attr("transform", function (d, i) {
+            console.log(d);
+            console.log(i)
+            var angleI = angleSlice * i * 180 / Math.PI - 90;   // the angle to rotate the label
+            var distance = radius + 70; // the distance from the center
+            var flip = angleI > 90 ? 180 : 0;                    // 180 if label needs to be flipped
+            return "rotate(" + (angleI) + ") translate(" + distance + ")" + "rotate(" + flip + ")"
+          })
+          .call(x_axis);
+    
+     */
 
     /////////////////////////////////////////////////////////
     ///////////// Draw the radar chart blobs ////////////////
