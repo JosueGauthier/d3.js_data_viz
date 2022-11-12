@@ -122,12 +122,6 @@ window.onload = () => {
 
 
 
-
-
-
-
-
-
     // Add the X Axis
     svg.append("g")
       .attr("transform", "translate(0," + height + ")")
