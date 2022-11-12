@@ -5,11 +5,7 @@ body {
 /* YOUR CSS CODE GOES HERE */
 
 
-.line {
-    fill: none;
-    stroke: steelblue;
-    stroke-width: 2px;
-}
+
 
 
 
@@ -19,15 +15,24 @@ body {
     font-weight: 300;
     fill: #242424;
     text-align: center;
-    text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff;
+    /* text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff; */
     cursor: default;
 }
 
-.legend {
-    font-family: 'Raleway', sans-serif;
-    fill: #333333;
-}
 
-.tooltip {
-    fill: #333333;
+
+div.tooltip {	
+    position: absolute;			
+    text-align: center;			
+    width: 100px;					
+    height: 80px;					
+    padding: 2px;				
+    font-family: 'Open Sans', sans-serif;
+    font-size: medium;	
+    color: white;
+    background: #333333;
+
+    border: 0px;		
+    border-radius: 8px;			
+    pointer-events: none;			
 }

@@ -1,16 +1,16 @@
-function RadarChart(id, options) {
+function RadarChart(id, options, carId) {
 
 
   d3.csv("cars.csv").then(function (data) {
 
     var data = [
       [
-        { axis: "Length", value: data[0]["Len"] },
-        { axis: "Width", value: data[0]["Width"] },
-        { axis: "Wheel base", value: data[0]["WheelBase"] },
-        { axis: "Retail price", value: data[0]["Retail_Price"] },
-        { axis: "Engine size", value: data[0]["Engine_Size"] },
-        { axis: "HorsePower", value: data[0]["Horsepower"] },
+        { axis: "Length", value: data[carId]["Len"] },
+        { axis: "Width", value: data[carId]["Width"] },
+        { axis: "Wheel base", value: data[carId]["WheelBase"] },
+        { axis: "Retail price", value: data[carId]["Retail_Price"] },
+        { axis: "Engine size", value: data[carId]["Engine_Size"] },
+        { axis: "HorsePower", value: data[carId]["Horsepower"] },
       ],];
 
 
@@ -149,9 +149,7 @@ function RadarChart(id, options) {
         .attr("y", function (d, i) { return (-(radius) * i) / scaleList[echelleNumero].length; }) // gere espacement entre données en y 
         .attr("transform", function (d, i) {
           var angleI = angleSlice * (echelleNumero) * 180 / Math.PI;   // the angle to rotate the label
-          //console.log(angleI)
           var flip = (angleI < 90 || angleI > 270 ) ? false : true; // 180 if label needs to be flipped
-          console.log(flip);
           if (flip == true) {
 
             return "rotate(" + (angleI) + ")" ;
