@@ -1,10 +1,3 @@
-/////////////////////////////////////////////////////////
-/////////////// The Radar Chart Function ////////////////
-/////////////// Written by Nadieh Bremer ////////////////
-////////////////// VisualCinnamon.com ///////////////////
-/////////// Inspired by the code of alangrafu ///////////
-/////////////////////////////////////////////////////////
-
 function RadarChart(id, options) {
 
 
@@ -15,27 +8,37 @@ function RadarChart(id, options) {
         { axis: "Length", value: data[0]["Len"] },
         { axis: "Width", value: data[0]["Width"] },
         { axis: "Wheel base", value: data[0]["WheelBase"] },
-        { axis: "Retail price", value: data[0]["Retail_Price"] / 200 },
-        { axis: "Engine size", value: data[0]["Engine_Size"] * 50 },
+        { axis: "Retail price", value: data[0]["Retail_Price"] },
+        { axis: "Engine size", value: data[0]["Engine_Size"] },
         { axis: "HorsePower", value: data[0]["Horsepower"] },
       ],];
 
 
+    var scaleList = [
+
+      [0, 100, 200, 300, 400],//"Length"
+      [0, 50, 100, 150, 200],//"Width"
+      [0, 50, 100, 150, 200],//"Wheel base":
+      [0, 25000, 50000, 75000, 100000],//"Retail price"
+      [0, 2, 4, 6, 8],//"Engine size":
+      [0, 100, 200, 300, 400],//"HorsePower"
+
+
+    ];
+
+
+
 
     var config = {
-      w: 600,				//Width of the circle
-      h: 600,				//Height of the circle
+      // circle
       margin: { top: 20, right: 20, bottom: 20, left: 20 }, //The margins of the SVG
       levels: 3,				//How many levels or inner circles should there be drawn
-      maxValue: 0, 			//What is the value that the biggest circle will represent
       labelFactor: 1.25, 	//How much farther than the radius of the outer circle should the labels be placed
       wrapWidth: 60, 		//The number of pixels after which a label needs to be given a new line
       opacityArea: 0.35, 	//The opacity of the area of the blob
       dotRadius: 4, 			//The size of the colored circles of each blog
       opacityCircles: 0.1, 	//The opacity of the circles of each blob
       strokeWidth: 2, 		//The width of the strok a  e around each blob
-      roundStrokes: false,	//If true the area and stroke will follow a round path (cardinal-closed)
-      //color: d3.scale.category10()	//Color function
     };
 
 
@@ -50,42 +53,33 @@ function RadarChart(id, options) {
       }//for i
     }//if
 
-    //If the supplied maxValue is smaller than the actual one, replace by the max in the data
-    var maxValue = Math.max(config.maxValue, d3.max(data, function (i) { return d3.max(i.map(function (o) { return o.value; })) }));
+
+    var radius = 300;
+
+
 
     var allAxis = (data[0].map(function (i, j) { return i.axis })),	//Names of each axis
       total = allAxis.length,					//The number of different axes
-      radius = Math.min(config.w / 2, config.h / 2), 	//Radius of the outermost circle
+
+
+
       //Format = d3.format('%'),			 	//Percentage formatting
       Format = d3.format('.1f'),
       angleSlice = Math.PI * 2 / total;		//The width in radians of each "slice"
 
     //Scale for the radius
 
-
-
-
-
-
-    /////////////////////////////////////////////////////////
-    //////////// Create the container SVG and g /////////////
-    /////////////////////////////////////////////////////////
-
     //Remove whatever chart with the same id/class was present before
     d3.select(id).select("svg").remove();
 
     //Initiate the radar chart SVG
     var svg = d3.select(id).append("svg")
-      .attr("width", config.w + config.margin.left + config.margin.right)
-      .attr("height", config.h + config.margin.top + config.margin.bottom)
+      .attr("width", radius * 2 + config.margin.left + config.margin.right)
+      .attr("height", radius * 2 + config.margin.top + config.margin.bottom)
       .attr("class", "radar" + id);
     //Append a g element		
     var g = svg.append("g")
-      .attr("transform", "translate(" + (config.w / 2 + config.margin.left) + "," + (config.h / 2 + config.margin.top) + ")");
-
-    /////////////////////////////////////////////////////////
-    ////////// Glow filter for some extra pizzazz ///////////
-    /////////////////////////////////////////////////////////
+      .attr("transform", "translate(" + (radius + config.margin.left) + "," + (radius + config.margin.top) + ")");
 
     //Filter for the outside glow
     var filter = g.append('defs').append('filter').attr('id', 'glow'),
@@ -93,10 +87,6 @@ function RadarChart(id, options) {
       feMerge = filter.append('feMerge'),
       feMergeNode_1 = feMerge.append('feMergeNode').attr('in', 'coloredBlur'),
       feMergeNode_2 = feMerge.append('feMergeNode').attr('in', 'SourceGraphic');
-
-    /////////////////////////////////////////////////////////
-    /////////////// Draw the Circular grid //////////////////
-    /////////////////////////////////////////////////////////
 
     //Wrapper for the grid & axes
     var axisGrid = g.append("g").attr("class", "axisWrapper");
@@ -107,70 +97,27 @@ function RadarChart(id, options) {
       .enter()
       .append("circle")
       .attr("class", "gridCircle")
-      .attr("r", function (d, i) { return radius / config.levels * d; })
+      .attr("r", function (d, i) {
+
+
+        return radius / config.levels * d;
+      })
       .style("fill", "#CDCDCD")
       .style("stroke", "#CDCDCD")
       .style("fill-opacity", config.opacityCircles)
       .style("filter", "url(#glow)");
 
-    /////////////////////////////////////////////////////////
-    //////////////////// Draw the axes //////////////////////
-    /////////////////////////////////////////////////////////
 
-
-    var scale = d3.scaleLinear()
-      .domain([10, 15])
-      .range([0, 200]);
-
-    var x_axis = d3.axisBottom()
-      .scale(scale);
-
-
-    /*     var scaleList = [
-    
-          { "Length": [0, 100, 200, 300, 400] },
-          { "Width": [0, 50, 100, 150, 200] },
-          { "Wheel base": [0, 100, 200, 300, 400] },
-          { "Retail price": [0, 100, 200, 300, 400] },
-          { "Engine size": [0, 100, 200, 300, 400] },
-          { "HorsePower": [0, 100, 200, 300, 400] },
-    
-    
-        ]; */
-
-    var scaleList = [
-
-      [0, 100, 200, 300, 400],//"Length"
-      [0, 50, 100, 150, 200],//"Width"
-      [0, 10, 20, 30, 40],//"Wheel base":
-      [0, 10000, 20000, 30000, 40000],//"Retail price"
-      [0, 2, 4, 6, 8],//"Engine size":
-      [0, 50, 100, 150, 200],//"HorsePower"
-
-
+    var rScaleList = [
+      d3.scaleLinear().range([0, radius - 50]).domain([0, (scaleList[0])[4]]),//"Length"
+      d3.scaleLinear().range([0, radius - 50]).domain([0, (scaleList[1])[4]]),//"Width"
+      d3.scaleLinear().range([0, radius - 50]).domain([0, (scaleList[2])[4]]),//"Wheel base":
+      d3.scaleLinear().range([0, radius - 50]).domain([0, (scaleList[3])[4]]),//"Retail price"
+      d3.scaleLinear().range([0, radius - 50]).domain([0, (scaleList[4])[4]]),//"Engine size":
+      d3.scaleLinear().range([0, radius - 50]).domain([0, (scaleList[5])[4]]),//"HorsePower"
     ];
 
 
-
-    var rScale = d3.scaleLinear()
-      .range([0, radius])
-      .domain([0, (scaleList[0])[4]]);
-
-
-
-    var rScaleList = [
-
-      d3.scaleLinear().range([0, radius]).domain([0, (scaleList[0])[4]]),//"Length"
-      d3.scaleLinear().range([0, radius]).domain([0, (scaleList[1])[4]]),//"Width"
-      d3.scaleLinear().range([0, radius]).domain([0, (scaleList[2])[4]]),//"Wheel base":
-      d3.scaleLinear().range([0, radius]).domain([0, (scaleList[3])[4]]),//"Retail price"
-      d3.scaleLinear().range([0, radius]).domain([0, (scaleList[4])[4]]),//"Engine size":
-      d3.scaleLinear().range([0, radius]).domain([0, (scaleList[5])[4]]),//"HorsePower"
-  
-  
-      ];
-
-    
 
 
 
@@ -182,6 +129,55 @@ function RadarChart(id, options) {
       .append("g")
       .attr("class", "axis");
 
+    //génération des echelles
+    for (let echelleNumero = 0; echelleNumero < 6; echelleNumero++) {
+
+      //Name,Type,AWD,RWD,Retail_Price,Dealer_Cost,Engine_Size,Cyl,
+      //Acura 3.5 RL 4dr,Sedan,0,0,43755,39014,3.5,6
+
+      //Horsepower,CityMilesPerGallon,HighwayMilesPerGallon,Weight,WheelBase,Len,Width
+      //225,18,24,3880,115,197,72
+
+
+      axis.append("text")
+        .attr("class", "textscale")
+        .style("font-size", "10px")
+        .attr("fill", "#737373")
+        .data(scaleList[echelleNumero])
+        .attr("x", 4) // decale echelle  en abscisse
+        .attr("dy", "-8")
+        .attr("y", function (d, i) { return (-(radius) * i) / scaleList[echelleNumero].length; }) // gere espacement entre données en y 
+        .attr("transform", function (d, i) {
+          var angleI = angleSlice * (echelleNumero) * 180 / Math.PI;   // the angle to rotate the label
+          //console.log(angleI)
+          var flip = (angleI < 90 || angleI > 270 ) ? false : true; // 180 if label needs to be flipped
+          console.log(flip);
+          if (flip == true) {
+
+            return "rotate(" + (angleI) + ")" ;
+            
+          }else{
+
+            return "rotate(" + (angleI) + ")";
+
+
+          }
+          
+        })
+        .text(function (d) {
+          if (echelleNumero == 0) {
+            return Format(d);
+          } else {
+            if (d != 0) {
+              return Format(d);
+            } else { return; }
+          }
+
+        });
+    }
+
+
+
     //Append the lines
     axis.append("line")
       .attr("x1", 0)
@@ -189,7 +185,7 @@ function RadarChart(id, options) {
       .attr("x2", function (d, i) { return radius * Math.cos(angleSlice * i - Math.PI / 2); })
       .attr("y2", function (d, i) { return radius * Math.sin(angleSlice * i - Math.PI / 2); })
       .attr("class", "line")
-      .style("stroke", "red")
+      .style("stroke", "white")
       .style("stroke-width", "2px");
 
 
@@ -199,88 +195,38 @@ function RadarChart(id, options) {
       .attr("class", "legend")
       .style("font-size", "11px")
       .attr("text-anchor", "middle")
-      .attr("transform", function (d, i) {
-        var angleI = angleSlice * i * 180 / Math.PI - 90;   // the angle to rotate the label
-        var distance = radius + 70; // the distance from the center
-        var flip = angleI > 90 ? 180 : 0;                    // 180 if label needs to be flipped
-        return "rotate(" + (angleI) + ") translate(" + distance + ")" + "rotate(" + flip + ")"
-      })
+      //.attr("dy", "0.35em")
+      .attr("x", function (d, i) { return (radius * 1.2) * Math.cos(angleSlice * i - Math.PI / 2); })
+      .attr("y", function (d, i) { return (radius * 1.1) * Math.sin(angleSlice * i - Math.PI / 2); })
       .text(function (d) { return d });
 
-    /* //echelle length
-    axis.append("text")
-      .attr("class", "textscale")
-      .style("font-size", "10px")
-      .attr("fill", "#737373")
-      .data(scaleList[0])
-      .attr("x", 4) // decale echelle  en abscisse
-      .attr("y", function (d, i) { return (-(radius) * i) / scaleList[0].length; }) // gere espacement entre données en y 
-      .attr("dy", "-1em") // decale echelle en ordonnée
-      .text(function (d) {
-        return Format(d);
-      }); */
 
 
-    function computeTextRotation(d) {
-      var rotation = (d.startAngle + d.endAngle) / 2 * 180 / Math.PI - 90;
-      return {
-        global: rotation,
-        correction: rotation > 90 ? 180 : 0
-      };
-    }
-
-
-
-    //génération des echelles
-    for (let echelleNumero = 0; echelleNumero < 6; echelleNumero++) {
-
-
-      axis.append("text")
-        .attr("class", "textscale")
-        .style("font-size", "10px")
-        .attr("fill", "#737373")
-        .data(scaleList[echelleNumero])
-        .attr("x", 4) // decale echelle  en abscisse
-        .attr("y", function (d, i) { return (-(radius) * i) / scaleList[echelleNumero].length; }) // gere espacement entre données en y 
-        .attr("dy", "-1em") // decale echelle en ordonnée
-
-        .attr("transform", function (d, i) {
-
-          var angleI = angleSlice * (0 + echelleNumero) * 180 / Math.PI;   // the angle to rotate the label
-          var flip = angleI > 90 ? 180 : 0;                    // 180 if label needs to be flipped
-          return "rotate(" + (angleI) + ") translate(" + 0 + ")"
-        })
-
-
-        .text(function (d) {
-          return Format(d);
-        });
-    }
-
-
-
-
-
-
-
-
-    for (let echelleNumero = 0; echelleNumero < 6; echelleNumero++) {
-
-      
-    }
+    /*     axis.append("text")
+          .attr("class", "legend")
+          .style("font-size", "11px")
+          .attr("text-anchor", "middle")
+          /* .attr("transform", function (d, i) {
+            var angleI = angleSlice * i * 180 / Math.PI - 90;   // the angle to rotate the label
+            var distance = radius + 70; // the distance from the center
+            var flip = angleI > 90 ? 180 : 0;                    // 180 if label needs to be flipped
+            return "rotate(" + (angleI) + ") translate(" + distance + ")" + "rotate(" + flip + ")"
+          }) 
+          .text(function (d) { return d });
+     */
+    var blobWrapper = g.selectAll(".radarWrapper")
+      .data(data)
+      .enter().append("g")
+      .attr("class", "radarWrapper");
 
 
     //The radial line function
     var radarLine = d3.lineRadial()
       .curve(d3.curveCardinalClosed)
-      .radius(function (d) { return rScale(d.value); })
+      .radius(function (d, i) { return rScaleList[i](d.value); })
       .angle(function (d, i) { return i * angleSlice; });
 
-    //Create a wrapper for the blobs	
-    var blobWrapper = g.selectAll(".radarWrapper")
-      .data(data)
-      .enter().append("g")
-      .attr("class", "radarWrapper");
+
 
     //Append the backgrounds	
     blobWrapper
@@ -318,20 +264,14 @@ function RadarChart(id, options) {
 
     //Append the dot
     blobWrapper.selectAll(".radarCircle")
-      .data(function (d, i) {
-        return d;
-      })
+      .data(function (d, i) { return d; })
       .enter().append("circle")
       .attr("class", "radarCircle")
       .attr("r", config.dotRadius)
-      .attr("cx", function (d, i) { return rScale(d.value) * Math.cos(angleSlice * i - Math.PI / 2); })
-      .attr("cy", function (d, i) { return rScale(d.value) * Math.sin(angleSlice * i - Math.PI / 2); })
-      .style("fill", function (d, i) { return myColor(d) })
+      .attr("cx", function (d, i) { return rScaleList[i](d.value) * Math.cos(angleSlice * i - Math.PI / 2); })
+      .attr("cy", function (d, i) { return rScaleList[i](d.value) * Math.sin(angleSlice * i - Math.PI / 2); })
+      .style("fill", myColor(0))
       .style("fill-opacity", 0.8);
-
-    /////////////////////////////////////////////////////////
-    //////// Append invisible circles for tooltip ///////////
-    /////////////////////////////////////////////////////////
 
     //Wrapper for the invisible circles on top
     var blobCircleWrapper = g.selectAll(".radarCircleWrapper")
@@ -345,8 +285,8 @@ function RadarChart(id, options) {
       .enter().append("circle")
       .attr("class", "radarInvisibleCircle")
       .attr("r", config.dotRadius * 1.5)
-      .attr("cx", function (d, i) { return rScale(d.value) * Math.cos(angleSlice * i - Math.PI / 2); })
-      .attr("cy", function (d, i) { return rScale(d.value) * Math.sin(angleSlice * i - Math.PI / 2); })
+      .attr("cx", function (d, i) { return rScaleList[i](d.value) * Math.cos(angleSlice * i - Math.PI / 2); })
+      .attr("cy", function (d, i) { return rScaleList[i](d.value) * Math.sin(angleSlice * i - Math.PI / 2); })
       .style("fill", "none")
       .style("pointer-events", "all")
       .on("mouseover", function (d, i) {
@@ -369,10 +309,6 @@ function RadarChart(id, options) {
     var tooltip = g.append("text")
       .attr("class", "tooltip")
       .style("opacity", 0);
-
-    /////////////////////////////////////////////////////////
-    /////////////////// Helper Function /////////////////////
-    /////////////////////////////////////////////////////////
 
     //Taken from http://bl.ocks.org/mbostock/7555321
     //Wraps SVG text	
