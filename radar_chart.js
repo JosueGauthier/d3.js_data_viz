@@ -65,9 +65,11 @@ function RadarChart(id, options) {
       angleSlice = Math.PI * 2 / total;		//The width in radians of each "slice"
 
     //Scale for the radius
-    var rScale = d3.scaleLinear()
-      .range([0, radius])
-      .domain([0, maxValue]);
+
+
+
+
+
 
     /////////////////////////////////////////////////////////
     //////////// Create the container SVG and g /////////////
@@ -147,6 +149,10 @@ function RadarChart(id, options) {
 
       .scale(scale);
 
+    var rScale = d3.scaleLinear()
+      .range([0, radius])
+      .domain([0, 400]);
+
 
 
 
@@ -161,11 +167,14 @@ function RadarChart(id, options) {
     axis.append("line")
       .attr("x1", 0)
       .attr("y1", 0)
-      .attr("x2", function (d, i) { return rScale(maxValue * 1.1) * Math.cos(angleSlice * i - Math.PI / 2); })
-      .attr("y2", function (d, i) { return rScale(maxValue * 1.1) * Math.sin(angleSlice * i - Math.PI / 2); })
+      .attr("x2", function (d, i) { return radius * Math.cos(angleSlice * i - Math.PI / 2); })
+      .attr("y2", function (d, i) { return radius * Math.sin(angleSlice * i - Math.PI / 2); })
       .attr("class", "line")
       .style("stroke", "red")
       .style("stroke-width", "2px");
+
+
+      
     //Append the labels at each axis
     axis.append("text")
       .attr("class", "legend")
@@ -188,12 +197,22 @@ function RadarChart(id, options) {
 
 
 
+
+
+
+
     var scaleList = [
 
-      {label: "Length", value: [0, 20, 30 , 40, 50 , 60]},
 
-      
+      { "Length": [0, 100, 200, 300, 400] },
+
     ];
+
+
+
+
+
+
 
 
 
@@ -203,36 +222,61 @@ function RadarChart(id, options) {
       .attr("fill", "#737373")
       //.attr("text-anchor", "middle")
 
-      .data(scaleList[0]["Len"])
+      .data(d3.range(1, (config.levels + 1)).reverse())
       //.enter().append("text")
       .attr("x", 4) // decale echelle  en abscisse
-      .attr("y", function (d) { return -d * radius / config.levels; }) // gere espacement entre données en y 
-      //.attr("dy", "0.4em") // decale echelle en ordonnée
+      .attr("y", function (d) {
 
-      .text(function (d) {
+        /*  console.log("aaaa"+-d * radius / config.levels); */
 
-        console.log(Format(maxValue * d / config.levels))
+        return -d * radius / config.levels;
+      }) // gere espacement entre données en y 
+    //.attr("dy", "0.4em") // decale echelle en ordonnée
 
-        return Format(maxValue * d / config.levels);
-      });
+    /* .text(function (d) {
+
+      console.log(Format(maxValue * d / config.levels))
+
+      return Format(maxValue * d / config.levels);
+    }); */
 
 
     axis.append("text")
       .attr("class", "textscale")
       .style("font-size", "10px")
       .attr("fill", "#737373")
+      //.attr("text-anchor", "middle")
+
+      .data(scaleList[0]["Length"])
+      //.enter().append("text")
+      .attr("x", 4) // decale echelle  en abscisse
+      .attr("y", function (d, i) { /* console.log(radius+10) */
+
+        return (-(radius) * i) / scaleList[0]["Length"].length;
+      }) // gere espacement entre données en y 
+      .attr("dy", "-1em") // decale echelle en ordonnée
+
+      .text(function (d) {
+        return Format(d);
+      });
 
 
-      .attr("transform", function (d, i) {
-        console.log(d);
-        console.log(i)
-        var angleI = angleSlice * i * 180 / Math.PI - 90;   // the angle to rotate the label
-        var distance = radius + 70; // the distance from the center
-        var flip = angleI > 90 ? 180 : 0;                    // 180 if label needs to be flipped
-        return "rotate(" + (angleI) + ") translate(" + distance + ")" + "rotate(" + flip + ")"
-      })
-      .call(a);
-
+    /*     axis.append("text")
+          .attr("class", "textscale")
+          .style("font-size", "10px")
+          .attr("fill", "#737373")
+    
+    
+          .attr("transform", function (d, i) {
+            console.log(d);
+            console.log(i)
+            var angleI = angleSlice * i * 180 / Math.PI - 90;   // the angle to rotate the label
+            var distance = radius + 70; // the distance from the center
+            var flip = angleI > 90 ? 180 : 0;                    // 180 if label needs to be flipped
+            return "rotate(" + (angleI) + ") translate(" + distance + ")" + "rotate(" + flip + ")"
+          })
+          .call(a);
+     */
 
 
 
@@ -307,15 +351,17 @@ function RadarChart(id, options) {
       .style("fill", "none")
       .style("filter", "url(#glow)");
 
-    //Append the circles
+    //Append the dot
     blobWrapper.selectAll(".radarCircle")
-      .data(function (d, i) { return d; })
+      .data(function (d, i) {
+        return d;
+      })
       .enter().append("circle")
       .attr("class", "radarCircle")
       .attr("r", config.dotRadius)
       .attr("cx", function (d, i) { return rScale(d.value) * Math.cos(angleSlice * i - Math.PI / 2); })
       .attr("cy", function (d, i) { return rScale(d.value) * Math.sin(angleSlice * i - Math.PI / 2); })
-      .style("fill", function (d, i) { return myColor(i) })
+      .style("fill", function (d, i) { return myColor(d) })
       .style("fill-opacity", 0.8);
 
     /////////////////////////////////////////////////////////
