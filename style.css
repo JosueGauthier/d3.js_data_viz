@@ -2,20 +2,13 @@ body {
     height: 100%;
 }
 
-/* YOUR CSS CODE GOES HERE */
-
-
-
-
-
 
 body {
     font-family: 'Open Sans', sans-serif;
-    font-size: 11px;
+    font-size: 15px;
     font-weight: 300;
     fill: #242424;
     text-align: center;
-    /* text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff; */
     cursor: default;
 }
 
@@ -23,12 +16,12 @@ body {
 
 div.tooltip {	
     position: absolute;			
-    text-align: center;			
-    width: 100px;					
-    height: 80px;					
-    padding: 2px;				
+    text-align: center;	
+    /* width: 250px;					 */
+    /* height: 80px;					 */
+    padding: 10px;				
     font-family: 'Open Sans', sans-serif;
-    font-size: medium;	
+    font-size: 15px;	
     color: white;
     background: #333333;
 

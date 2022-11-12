@@ -52,8 +52,6 @@ window.onload = () => {
       d.horsepower = parseInt(d.Horsepower);
       d.price = parseInt(d.Retail_Price);
       d.cylindree = parseInt(d.Cyl);
-
-
       compteur = compteur + 1;
     });
 
@@ -61,7 +59,7 @@ window.onload = () => {
     // Scale the range of the data
     x.domain([0, d3.max(data, function (d) { return d.weight; })]);
     y.domain([0, d3.max(data, function (d) { return d.cityMilesPerGallon; })]);
-    y.domain([0, 65]);
+    y.domain([0, 30]);
 
 
     var colorScale = d3.scaleOrdinal().domain(data)
@@ -76,23 +74,18 @@ window.onload = () => {
     svg.selectAll("dot")
       .data(data)
       .enter().append("circle")
-      .attr("r", function (d) { return d.Cyl })
+      .attr("r", function (d) { return d.Cyl*1.5 })
       .attr("fill", function (d) { return colorScale(d.Type) })
       .attr("opacity", 0.5)
       .attr("cx", function (d) { return x(d.weight); })
       .attr("cy", function (d) { return y(d.cityMilesPerGallon); })
       .on("mouseover", function (d) {
-
-        console.log(d.idData);
-
-
-
         //Call function to draw the Radar chart
         RadarChart(".radarChart", radarChartOptions, d.idData);
         div.transition()
           .duration(200)
           .style("opacity", .9);
-        div.html(d.cylindree + "<br>" + d.Type + "<br>" + d.price)
+        div.html(d.Name + "<br>")
           .style("left", (d3.event.pageX) + "px")
           .style("top", (d3.event.pageY) + "px");
       })

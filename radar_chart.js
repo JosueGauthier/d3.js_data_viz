@@ -31,7 +31,7 @@ function RadarChart(id, options, carId) {
 
     var config = {
       // circle
-      margin: { top: 20, right: 20, bottom: 20, left: 20 }, //The margins of the SVG
+      margin: { top: 40, right: 20, bottom: 40, left: 20 }, //The margins of the SVG
       levels: 3,				//How many levels or inner circles should there be drawn
       labelFactor: 1.25, 	//How much farther than the radius of the outer circle should the labels be placed
       wrapWidth: 60, 		//The number of pixels after which a label needs to be given a new line
