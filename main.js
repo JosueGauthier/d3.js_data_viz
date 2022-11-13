@@ -5,23 +5,19 @@ window.onload = () => {
 
   var screenWidth = 0.6 * window.screen.width;
 
-  var screenHeight = 0.78 * window.screen.height;
+  var screenHeight = 0.80 * window.screen.height;
 
 
   // config du radar chart :
 
   var radarChartOptions = {
-    w: width,
-    h: height,
-    margin: margin,
-    maxValue: 0.5,
-    levels: 5,
+
     roundStrokes: true,
     //color: color,
   };
 
   // set the dimensions and margins of the graph
-  var margin = { top: 40, right: 20, bottom: 50, left: 50 },
+  var margin = { top:  0.04 * window.screen.height, right: screenWidth / 20, bottom: 0.05 * window.screen.height, left: screenWidth / 20 },
     width = screenWidth,
     height = screenHeight;
 
@@ -152,7 +148,7 @@ window.onload = () => {
       .enter()
       .append("circle")
       .attr("cx", 10)
-      .attr("cy", function (d, i) { return 10+i * 25 }) // 100 is where the first dot appears. 25 is the distance between dots
+      .attr("cy", function (d, i) { return 10 + i * 25 }) // 100 is where the first dot appears. 25 is the distance between dots
       .attr("r", 7)
       .style("fill", function (d) { return colorScale(d) })
 
@@ -175,12 +171,6 @@ window.onload = () => {
 
     var svgLegendSize = d3.select("#size_legend")
       .append("svg")
-
-
-    // The scale you use for bubble size
-    /*  var size = d3.scaleSqrt()
-       .domain([1, 100])  // What's in the data, let's say it is percentage
-       .range([1, 100])  // Size in pixel */
 
     // Add legend: circles
     var valuesToShow = [100, 250, 500]
@@ -219,7 +209,7 @@ window.onload = () => {
       .append("text")
       .attr('x', xLabel)
       .attr('y', function (d) { return yCircle - r(d) * 4.5 })
-      .text(function (d) { return (d+" HP") })
+      .text(function (d) { return (d + " HP") })
       .style("font-size", 15)
       .attr('alignment-baseline', 'middle')
 

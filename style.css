@@ -7,7 +7,7 @@ body {
     margin: 0;
     font-family: 'Open Sans', sans-serif;
     font-size: 15px;
-    font-weight: 300;
+    font-weight: 400;
     fill: #242424;
     text-align: center;
     cursor: default;
@@ -18,8 +18,6 @@ body {
 div.tooltip {
     position: absolute;
     text-align: center;
-    /* width: 250px;					 */
-    /* height: 80px;					 */
     padding: 10px;
     font-family: 'Open Sans', sans-serif;
     font-size: 15px;
@@ -39,25 +37,28 @@ div.tooltip {
     background-color: bisque;
     display: flex;
     flex-direction: row;
-/*     justify-content: center;
- */    /* align-items: center; */
+
 }
 
 .radar {
     display: flex;
     flex-direction: column;
-    justify-content:space-between;
+    justify-content: space-between;
     align-items: center;
-    margin-bottom: 50px;
+    margin-bottom: 10vh;
+    margin-top: 4vh;
 }
 
 .info {
     height: 35vh;
 }
 
+.radarChart{
+
+}
+
 .styled-table {
     /* border-collapse: collapse; */
-    margin: 25px 0;
     font-size: 0.9em;
     font-family: sans-serif;
     min-width: 400px;
@@ -111,7 +112,7 @@ div.tooltip {
     z-index: 1;
     position: absolute;
     left: 50vw;
-    top: 20px;
+    top: 4vh;
 
 
 
