@@ -31,7 +31,7 @@ function RadarChart(id, options, carId) {
 
     var config = {
       // circle
-      margin: { top: 40, right: 20, bottom: 40, left: 20 }, //The margins of the SVG
+      margin: { top: 40, right: 50, bottom: 40, left: 60 }, //The margins of the SVG
       levels: 3,				//How many levels or inner circles should there be drawn
       labelFactor: 1.25, 	//How much farther than the radius of the outer circle should the labels be placed
       wrapWidth: 60, 		//The number of pixels after which a label needs to be given a new line
@@ -54,7 +54,7 @@ function RadarChart(id, options, carId) {
     }//if
 
 
-    var radius = 300;
+    var radius = 150;
 
 
 
@@ -149,18 +149,18 @@ function RadarChart(id, options, carId) {
         .attr("y", function (d, i) { return (-(radius) * i) / scaleList[echelleNumero].length; }) // gere espacement entre données en y 
         .attr("transform", function (d, i) {
           var angleI = angleSlice * (echelleNumero) * 180 / Math.PI;   // the angle to rotate the label
-          var flip = (angleI < 90 || angleI > 270 ) ? false : true; // 180 if label needs to be flipped
+          var flip = (angleI < 90 || angleI > 270) ? false : true; // 180 if label needs to be flipped
           if (flip == true) {
 
-            return "rotate(" + (angleI) + ")" ;
-            
-          }else{
+            return "rotate(" + (angleI) + ")";
+
+          } else {
 
             return "rotate(" + (angleI) + ")";
 
 
           }
-          
+
         })
         .text(function (d) {
           if (echelleNumero == 0) {

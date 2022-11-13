@@ -13,14 +13,25 @@
 
   <body>
     <!-- loading the main javascript file; implement logic there -->
+
+    <div class="container">
+      <div class="graph-container">
+        <div class="graph"></div>
+        <div class="legend-container">
+          <svg class="legend-svg" id="color_legend"></svg>
+
+          <svg class="legend-svg" id="size_legend"></svg>
+        </div>
+      </div>
+
+      <div class="radar">
+        <div class="info"></div>
+        <div class="radarChart"></div>
+      </div>
+    </div>
+
     <script src="main.js"></script>
     <script src="radar_chart.js"></script>
-
-
-    <div class="radarChart"></div>
-
-    <script>
-      
-    </script>
+    <script src="table.js"></script>
   </body>
 </html>
