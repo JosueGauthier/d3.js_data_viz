@@ -3,25 +3,22 @@ var d3; // Minor workaround to avoid error messages in editors
 // Waiting until document has loaded
 window.onload = () => {
 
+
+  //get heigth and width in our JS
   var screenWidth = 0.6 * window.screen.width;
-
   var screenHeight = 0.80 * window.screen.height;
+  console.log(window.screen.width)
 
 
-  // config du radar chart :
-
+  // config radar chart :
   var radarChartOptions = {
-
     roundStrokes: true,
-    //color: color,
   };
 
   // set the dimensions and margins of the graph
-  var margin = { top:  0.04 * window.screen.height, right: screenWidth / 20, bottom: 0.05 * window.screen.height, left: screenWidth / 20 },
+  var margin = { top: 0.04 * window.screen.height, right: screenWidth / 20, bottom: 0.05 * window.screen.height, left: screenWidth / 20 },
     width = screenWidth,
     height = screenHeight;
-
-
 
 
   var svg = d3.select(".graph").append("svg")
@@ -33,12 +30,11 @@ window.onload = () => {
 
   // Get the data
   d3.csv("cars.csv").then(function (data) {
-
     compteur = 0;
 
 
+    // parse data and add a compteur to set id
     data.forEach(function (d) {
-
       d.idData = compteur
       d.weight = parseInt(d.Weight);
       d.cityMilesPerGallon = parseInt(d.CityMilesPerGallon);
@@ -63,9 +59,9 @@ window.onload = () => {
     r.domain([0, d3.max(data, function (d) { return d.horsepower; })]);
 
 
+    //color scale for one of our attribute
     var colorScale = d3.scaleOrdinal().domain(data)
       .range(d3.schemeSet1);
-
 
     var div = d3.select(".graph").append("div")
       .attr("class", "tooltip")
@@ -75,7 +71,6 @@ window.onload = () => {
     svg.selectAll("dot")
       .data(data)
       .enter().append("circle")
-      /* .attr("r", function (d) { return d.horsepower / 40 }) */
       .attr("r", function (d) { return r(d.horsepower) })
       .attr("fill", function (d) { return colorScale(d.Type) })
       .attr("opacity", 0.5)
@@ -84,10 +79,8 @@ window.onload = () => {
       .on("mouseover", function (d) {
         //Call function to draw the Radar chart
         RadarChart(".radarChart", radarChartOptions, d.idData);
+        //Call table on hover
         Tabulate(data[d.idData]);
-
-
-
         div.transition()
           .duration(200)
           .style("opacity", .9);
@@ -131,12 +124,10 @@ window.onload = () => {
 
     // select the svg area
     var Svg = d3.select("#color_legend")
-
     // create a list of keys
     var keys = [];
 
     for (let i = 0; i < data.length; i++) {
-
       if (keys.indexOf(data[i]['Type']) === -1) {
         keys.push(data[i]['Type']);
       }

@@ -3,6 +3,11 @@ function RadarChart(id, options, carId) {
 
   d3.csv("cars.csv").then(function (data) {
 
+    //Name,Type,AWD,RWD,Retail_Price,Dealer_Cost,Engine_Size,Cyl,
+    //Acura 3.5 RL 4dr,Sedan,0,0,43755,39014,3.5,6
+    //Horsepower,CityMilesPerGallon,HighwayMilesPerGallon,Weight,WheelBase,Len,Width
+    //225,18,24,3880,115,197,72
+
     var data = [
       [
         { axis: "Length", value: data[carId]["Len"] },
@@ -54,16 +59,10 @@ function RadarChart(id, options, carId) {
     }//if
 
 
-
-
-    var radius = (window.innerWidth+window.innerHeight) / 15;
-
-
+    var radius = (window.innerWidth + window.innerHeight) / 15;
 
     var allAxis = (data[0].map(function (i, j) { return i.axis })),	//Names of each axis
       total = allAxis.length,					//The number of different axes
-
-
 
       //Format = d3.format('%'),			 	//Percentage formatting
       Format = d3.format('.1f'),
@@ -134,11 +133,6 @@ function RadarChart(id, options, carId) {
     //génération des echelles
     for (let echelleNumero = 0; echelleNumero < 6; echelleNumero++) {
 
-      //Name,Type,AWD,RWD,Retail_Price,Dealer_Cost,Engine_Size,Cyl,
-      //Acura 3.5 RL 4dr,Sedan,0,0,43755,39014,3.5,6
-
-      //Horsepower,CityMilesPerGallon,HighwayMilesPerGallon,Weight,WheelBase,Len,Width
-      //225,18,24,3880,115,197,72
 
 
       axis.append("text")

@@ -41,8 +41,6 @@ var Tabulate = function (data) {
         .append("tbody")
         .html(rowTemplate);
 
-
-
     return table;
 }
 
